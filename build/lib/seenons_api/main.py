@@ -1,4 +1,4 @@
-from flask import Flask, abort, g
+from flask import Flask, jsonify, abort, g
 from seenons_api.utils.postalcode_checks import get_postcode
 from seenons_api.utils.open_db import open_db
 from seenons_api.utils.search_database import search_database
@@ -54,7 +54,7 @@ class WasteStreams(Resource):
             abort(404, description=str(e))
         except Exception as e:
             abort(500, description="Internal server error")
-        return results
+        return jsonify(results)
 
 @api.teardown_appcontext
 def close_db(exception):

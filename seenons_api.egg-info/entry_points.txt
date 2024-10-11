@@ -1,0 +1,3 @@
+[console_scripts]
+run_seenons_api = seenons_api.main:main
+
