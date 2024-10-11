@@ -9,6 +9,8 @@ swagger = Api(api, version='1.0', title='Waste Streams API',
               description='API to get waste stream data based on postal codes',
               doc='/docs')  # Swagger UI documentation endpoint
 
+
+
 # Define the response model for Swagger documentation
 stream_model = swagger.model('WasteStream', {
     'Id': fields.Integer(required=True, description='The waste stream ID'),
@@ -25,19 +27,34 @@ parser = swagger.parser()
 parser.add_argument('postalcode', type=str, required=True, help='Postal code to filter streams')
 parser.add_argument('weekdays[]', type=str, action='append', help='Array of weekdays')
 
+
+
+
 @swagger.route('/streams/')
 class WasteStreams(Resource):
     @swagger.doc('get_waste_streams')
     @swagger.expect(parser)  # Use the defined parser
     @swagger.marshal_list_with(stream_model)
     def get(self):
-        waste_db = open_db()
-        if waste_db is None:
-            abort(500, description="Database error")
-        postcode = get_postcode()
-        if postcode:
-            results = search_database(postcode, waste_db)
-            return results  # Assuming results is a list of dictionaries matching the model
+        try:
+            waste_db = open_db() # Open the database connection
+        except Exception as e:
+            abort(500, description=str(e))
+        try:
+            postcode = get_postcode() # Get the postal code from the query parameters
+        except ValueError as e:
+            abort(400, description=str(e))
+        except Exception as e:
+            abort(500, description="Internal server error")
+        try:
+            results = search_database(postcode, waste_db) # Search the database for the given postcode and optional weekdays
+            if not results:
+                raise ValueError("No data found for the given postal code")
+        except ValueError as e:
+            abort(404, description=str(e))
+        except Exception as e:
+            abort(500, description="Internal server error")
+        return results
 
 @api.teardown_appcontext
 def close_db(exception):

@@ -9,8 +9,10 @@ install:
 run:
 	python3 -m seenons_api.main
 
+test:
+	python3 -m pytest
+
 clean:
 	rm -rf build dist seenons_api.egg-info
-	find . -name "__pycache__" -exec rm -r {} +
 
-.PHONY: all build install run clean
+.PHONY: all build install run test clean

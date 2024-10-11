@@ -1,7 +1,3 @@
-## rest_api
-A sample REST API to deal with waste streams
-
-
 ## Project Name
 
 Seenons REST API
@@ -26,6 +22,9 @@ make
 ## Run project
 make run (or run_seenons_api)
 
+# Database
+This project uses an SQLite database named 'seenons.db', stored in '/seenons_api/database/'. Ensure a database is present and configured.
+
 # Usage
 
 ## Endpoint
@@ -37,3 +36,7 @@ curl -X 'GET' 'http://localhost:5000/streams/?postalcode=1500SS'
 ## Request with optional weekdays parameter
 curl -X 'GET' 'http://localhost:5000/streams/?postalcode=1500SS&weekdays[]=monday&weekdays[]=tuesday'
 
+# Testing
+There are a couple of unit tests to tast the api and helper functions. You can run the following command to run the testers:
+
+make test

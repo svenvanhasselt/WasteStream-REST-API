@@ -1,3 +1,5 @@
 Flask==2.0.1
 Flask-RESTX==0.5.1
 Werkzeug==2.0.3
+pytest
+pytest-mock
