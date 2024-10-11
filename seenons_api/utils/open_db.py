@@ -1,7 +1,7 @@
 import sqlite3
 from flask import g, abort
 
-DATABASE = "seenons_api/database/seenons1.db"
+DATABASE = "seenons_api/database/seenons.db"
 
 def open_db():
     if 'db' not in g:
