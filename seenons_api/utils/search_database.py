@@ -13,31 +13,40 @@ def company_days_available(days_available, weekday_query):
     return False
 
 def search_database(postcode, db):
-    column_names = ["Id", "Name", "Stream id", "Asset id", "Postal range", "Available days", "Time slots"]
+    column_names = ["Id", "Name", "Provider", "Asset", "Postal range", "Available days", "Time slots"]
     results = []
     weekday_query = request.args.getlist('weekdays[]')
     cursor = db.cursor()
     #try catch??
-    cursor.execute("SELECT * FROM availability")  # Adjust the table name as necessary
+
+    cursor.execute("""
+            SELECT 
+                a.id AS availability_id,
+                lp.name AS provider_name,
+                wt.name AS waste_stream_name,
+                at.name AS asset_name,
+                a.postal_range,
+                a.available_days,
+                a.time_slots
+            FROM 
+                availability a
+            JOIN 
+                logistics_provider lp ON a.provider_id = lp.id
+            JOIN 
+                asset_types at ON a.asset_type_id = at.id
+            JOIN
+                waste_streams wt ON a.waste_stream_id = wt.id
+        """)
     rows = cursor.fetchall()
 
     for row in rows:
-        print(f"Availability ID: {row['id']}")
-        print(f"Provider ID: {row['provider_id']}")
-        print(f"Waste Stream ID: {row['waste_stream_id']}")
-        print(f"Asset Type ID: {row['asset_type_id']}")
-        print(f"Postal Code Range: {row['postal_range']}")
-        print(f"Available Days: {row['available_days']}")
-        print(f"Time Slot Start: {row['time_slots']}")
-        print("-" * 20)  # Just a separator for readability
-    # for row in rows:
-    #     postal_range = row[4]
-    #     # Check if there is a '-' in the providers range and is within it's range (eg. 1500-2000)
-    #     # Or check if the postcode matches with the providers postcode (eg. 10XX or 1013)
-    #     if '-' in postal_range and is_within_postalrange(postcode, postal_range) or \
-    #     match_postcode(postcode, postal_range) is True:
-    #         #Check if a weekdays query is sent and whether the provider is available those days
-    #         if not weekday_query or weekday_query and company_days_available(row[5], weekday_query):
-    #             results.append(dict(zip(column_names, row))) 
+        postal_range = row['postal_range']
+        # Check if there is a '-' in the providers range and is within it's range (eg. 1500-2000)
+        # Or check if the postcode matches with the providers postcode (eg. 10XX or 1013)
+        if '-' in postal_range and is_within_postalrange(postcode, postal_range) or \
+        match_postcode(postcode, postal_range) is True:
+            #Check if a weekdays query is sent and whether the provider is available those days
+            if not weekday_query or weekday_query and company_days_available(row['available_days'], weekday_query):
+                results.append(dict(zip(column_names, row))) 
 
-    # return results
+    return results

@@ -11,5 +11,6 @@ run:
 
 clean:
 	rm -rf build dist seenons_api.egg-info
+	find . -name "__pycache__" -exec rm -r {} +
 
 .PHONY: all build install run clean
