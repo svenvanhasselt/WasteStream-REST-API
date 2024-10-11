@@ -1,0 +1,52 @@
+from flask import Flask, jsonify, request, abort, g
+from seenons_api.utils.postalcode_checks import get_postcode
+from seenons_api.utils.open_db import open_db
+from seenons_api.utils.search_database import search_database
+from flask_restx import Api, Resource, fields
+
+api = Flask(__name__)
+swagger = Api(api, version='1.0', title='Waste Streams API',
+              description='API to get waste stream data based on postal codes',
+              doc='/docs')  # Swagger UI documentation endpoint
+
+# Define the response model for Swagger documentation
+stream_model = swagger.model('WasteStream', {
+    'Id': fields.Integer(required=True, description='The waste stream ID'),
+    'Name': fields.String(required=True, description='Name of the service provider'),
+    'Stream id': fields.String(required=True, description='Available waste stream ids'),
+    'Asset id': fields.String(required=True, description='Available waste asset ids'),
+    'Postal range': fields.String(required=True, description='Postal range of provider'),
+    'Available days': fields.String(required=True, description='Available days of provider'),
+    'Time slots': fields.String(required=True, description='Available time slots of provider'),
+})
+
+# Create a parser for query parameters
+parser = swagger.parser()
+parser.add_argument('postalcode', type=str, required=True, help='Postal code to filter streams')
+parser.add_argument('weekdays[]', type=str, action='append', help='Array of weekdays')
+
+@swagger.route('/streams/')
+class WasteStreams(Resource):
+    @swagger.doc('get_waste_streams')
+    @swagger.expect(parser)  # Use the defined parser
+    @swagger.marshal_list_with(stream_model)
+    def get(self):
+        waste_db = open_db()
+        if waste_db is None:
+            abort(500, description="Database error")
+        postcode = get_postcode()
+        if postcode:
+            results = search_database(postcode, waste_db)
+            return results  # Assuming results is a list of dictionaries matching the model
+
+@api.teardown_appcontext
+def close_db(exception):
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
+
+def main():
+    api.run(debug=True)
+
+if __name__ == '__main__':
+    main()
