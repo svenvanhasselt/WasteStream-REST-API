@@ -1,4 +1,4 @@
-from flask import Flask, abort, g
+from flask import Flask, jsonify, abort, g
 from seenons_api.utils.postalcode_checks import get_postcode
 from seenons_api.utils.open_db import open_db
 from seenons_api.utils.search_database import search_database
@@ -38,23 +38,20 @@ class WasteStreams(Resource):
     def get(self):
         try:
             waste_db = open_db() # Open the database connection
-        except Exception as e:
-            abort(500, description=str(e))
-        try:
             postcode = get_postcode() # Get the postal code from the query parameters
         except ValueError as e:
             abort(400, description=str(e))
         except Exception as e:
-            abort(500, description="Internal server error")
+            abort(500, description=str(e))
         try:
             results = search_database(postcode, waste_db) # Search the database for the given postcode and optional weekdays
             if not results:
                 raise ValueError("No data found for the given postal code")
+            return results
         except ValueError as e:
             abort(404, description=str(e))
         except Exception as e:
             abort(500, description="Internal server error")
-        return results
 
 @api.teardown_appcontext
 def close_db(exception):
