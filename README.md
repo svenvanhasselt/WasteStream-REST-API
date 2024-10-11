@@ -8,10 +8,10 @@ A sample REST API to deal with waste streams.
 # Installation
 
 ## Clone the repository
-git clone <repository-url>
+git clone 'repository-url'
 
 ## Navigate to the project directory
-cd <project-directory>
+cd 'repository-directory'
 
 ## Install dependencies
 pip install -r requirements.txt

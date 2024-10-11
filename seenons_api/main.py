@@ -27,9 +27,6 @@ parser = swagger.parser()
 parser.add_argument('postalcode', type=str, required=True, help='Postal code to filter streams')
 parser.add_argument('weekdays[]', type=str, action='append', help='Array of weekdays')
 
-
-
-
 @swagger.route('/streams/')
 class WasteStreams(Resource):
     @swagger.doc('get_waste_streams')
