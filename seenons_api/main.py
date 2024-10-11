@@ -39,15 +39,18 @@ class WasteStreams(Resource):
         try:
             waste_db = open_db() # Open the database connection
             postcode = get_postcode() # Get the postal code from the query parameters
+        
         except ValueError as e:
             abort(400, description=str(e))
         except Exception as e:
             abort(500, description=str(e))
+        
         try:
             results = search_database(postcode, waste_db) # Search the database for the given postcode and optional weekdays
             if not results:
                 raise ValueError("No data found for the given postal code")
             return results
+        
         except ValueError as e:
             abort(404, description=str(e))
         except Exception as e:

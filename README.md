@@ -36,6 +36,9 @@ curl -X 'GET' 'http://localhost:5000/streams/?postalcode=1500SS'
 ## Request with optional weekdays parameter
 curl -X 'GET' 'http://localhost:5000/streams/?postalcode=1500SS&weekdays[]=monday&weekdays[]=tuesday'
 
+# SWAGGER
+The Swagger UI documentation endpoint is '/docs'
+
 # Testing
 There are a couple of unit tests to tast the api and helper functions. You can run the following command to run the testers:
 
