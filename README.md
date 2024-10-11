@@ -36,7 +36,7 @@ curl -X 'GET' 'http://localhost:5000/streams/?postalcode=1500SS'
 ## Request with optional weekdays parameter
 curl -X 'GET' 'http://localhost:5000/streams/?postalcode=1500SS&weekdays[]=monday&weekdays[]=tuesday'
 
-# SWAGGER
+# Swagger
 The Swagger UI documentation endpoint is '/docs'
 
 # Testing
