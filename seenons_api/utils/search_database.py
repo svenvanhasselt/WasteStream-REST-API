@@ -48,4 +48,5 @@ def search_database(postcode, db):
         match_postcode(postcode, postal_range) is True:
             if not weekday_query or weekday_query and company_days_available(row['available_days'], weekday_query):
                 results.append(dict(zip(column_names, row)))
+    cursor.close()
     return results
