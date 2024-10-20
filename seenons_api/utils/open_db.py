@@ -5,6 +5,6 @@ DATABASE = "seenons_api/database/seenons.db"
 
 def open_db():
     if 'db' not in g:
-        g.database = sqlite3.connect(f'file:{DATABASE}?mode=ro', uri=True)
-        g.database.row_factory = sqlite3.Row
-        return g.database
+        g.db = sqlite3.connect(f'file:{DATABASE}?mode=ro', uri=True)
+        g.db.row_factory = sqlite3.Row
+        return g.db
