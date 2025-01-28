@@ -1,6 +1,6 @@
 ## Project Name
 
-Seenons REST API
+WasteStrean REST API
 
 # Description
 A sample REST API to deal with waste streams.
